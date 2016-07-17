@@ -1,8 +1,12 @@
+from string import punctuation
+from collections import defaultdict
+from random import choice
 """Dictionaries Assessment
 
 **IMPORTANT:** these problems are meant to be solved using
 dictionaries and sets.
 """
+
 
 def count_words(phrase):
     """Count unique words in a string.
@@ -29,17 +33,24 @@ def count_words(phrase):
         {'Porcupine': 1, 'do.': 1, 'porcupine': 1, 'see,': 1}
     """
 
-    return {}
+    words = {}
+
+    phrase = phrase.split(" ")
+
+    for word in phrase:
+        words[word] = words.get(word, 0) + 1
+
+    return words
 
 
 def get_melon_price(melon_name):
     """Given a melon name, return the price of the melon
-    
+
     Here are a list of melon names and prices:
     Watermelon 2.95
     Cantaloupe 2.50
     Musk 3.25
-    Christmas 14.25 
+    Christmas 14.25
     (it was a bad year for Christmas melons -- supply is low!)
 
         >>> get_melon_price('Watermelon')
@@ -47,12 +58,17 @@ def get_melon_price(melon_name):
 
         >>> get_melon_price('Musk')
         3.25
-        
+
         >>> get_melon_price('Tomato')
         'No price found'
     """
 
-    return 0
+    melon_names_and_prices = {'Watermelon': 2.95, 'Cantaloupe': 2.50, 'Musk': 3.25,
+                              'Christmas': 14.25}
+
+    melon_price = melon_names_and_prices.get(melon_name, "No price found")
+
+    return melon_price
 
 
 def word_length_sorted(words):
@@ -71,7 +87,26 @@ def word_length_sorted(words):
         [(1, ['a']), (2, ['an', 'ok']), (3, ['day']), (5, ['apple'])]
     """
 
-    return []
+    #makes a dictionary to organize words and length
+    word_lengths = {}
+
+    #puts each word and its length in the dictionary as list of values and keys, respectively
+    for word in words:
+        length_of_word = len(word)
+        if length_of_word in word_lengths:
+            word_lengths[length_of_word].append(word)
+        else:
+            word_lengths[length_of_word] = [word]
+
+    #makes an empty list for word length pairs
+    word_lengths_list = []
+
+    #for keys and values in the word_lengths dictionary,
+    #appends values to the list as a tuple of a number (length) and a sorted list of words
+    for lengths, words in word_lengths.items():
+        word_lengths_list.append((lengths, sorted(words)))
+
+    return word_lengths_list
 
 
 def translate_to_pirate_talk(phrase):
@@ -113,7 +148,24 @@ def translate_to_pirate_talk(phrase):
         'me swabbie be not a man!'
     """
 
-    return ""
+    pirate_speak = {'sir': 'matey', 'hotel': 'fleabag inn', 'student': 'swabbie',
+                    'man': 'matey', 'professor': 'foul blaggart', 'restaurant': 'galley',
+                    'your': 'yer', 'excuse': 'arr', 'students': 'swabbies', 'are': 'be',
+                    'restroom': 'head', 'my': 'me', 'is': 'be'}
+
+    phrase_list = phrase.split(" ")
+
+    translated_phrase = []
+
+    for word in phrase_list:
+        if word in pirate_speak:
+            translated_phrase.append(pirate_speak[word])
+        else:
+            translated_phrase.append(word)
+
+    translated_phrase = " ".join(translated_phrase)
+
+    return translated_phrase
 
 
 def kids_game(names):
@@ -154,10 +206,32 @@ def kids_game(names):
     good solutions here will definitely require a dictionary.
     """
 
-    return []
+    possible_names = {}
+
+    for word in names:
+        possible_names[word] = [next_word for next_word in names if next_word[0] == word[-1]]
+
+    game_results = [names[0]]
+
+    current_name = game_results[0]
+
+    while True:
+        current_word_list = possible_names[current_name]
+        if len(current_word_list) > 0 and current_word_list[0] not in game_results:
+            next_name = current_word_list[0]
+            game_results.append(next_name)
+            del current_word_list[0]
+            current_name = next_name
+        elif len(current_word_list) > 1:
+            del current_word_list[0]
+        else:
+            break
+
+    return game_results
 
 #####################################################################
 # You can ignore everything below this.
+
 
 def print_dict(d):
     # This method is used to print dictionaries in key-alphabetical
